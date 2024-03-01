@@ -2,5 +2,6 @@
 {
     public class TestpushClass
     {
+        public int MyProperty { get; set; }
     }
 }
