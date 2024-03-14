@@ -1,10 +1,12 @@
 ﻿using CV.Api;
 using CV.Application.Services;
 using CV_backend.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CV_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     public class UserController : Controller
     {
