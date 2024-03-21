@@ -30,7 +30,7 @@ builder.Services.AddAuthentication(x =>
         ValidIssuer = config["Jwt:Issuer"],
         ValidAudience = config["Jwt:Audience"],
         ValidateIssuer = true,
-        ValidateAudience = true
+        ValidateAudience = true,
 
     };
 });

@@ -14,4 +14,6 @@ namespace CV.Contracts.Responses
         public required string Email { get; init; }
         public required string CountryOfResidency { get; init; }
     }
+
+
 }

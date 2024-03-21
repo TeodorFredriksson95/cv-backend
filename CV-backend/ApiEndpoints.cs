@@ -14,6 +14,14 @@
             public const string Update = $"{Base}/{{id:guid}}";
 
             public const string Delete = $"{Base}/{{id:guid}}";
+        }  
+        
+        public static class Candidate
+        {
+            public const string Base = $"{ApiBase}/candidate";
+            public const string GetFullProfile = $"{Base}/full-profile";
+            public const string GetCandidateById = $"{Base}/{{id}}";
+
         }
     }
 }

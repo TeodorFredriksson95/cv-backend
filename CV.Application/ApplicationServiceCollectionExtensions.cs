@@ -9,6 +9,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CV.Application.Services.CandidateService;
+using CV.Application.Repositories.CandidateRepository;
 
 namespace CV.Application
 {
@@ -18,7 +20,10 @@ namespace CV.Application
         {
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IUserService, UserService>();
-            //services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
+
+            services.AddSingleton<ICandidateRepository, CandidateRepository>();
+            services.AddSingleton<ICandidateService, CandidateService>();
+
             return services;
         }
 
