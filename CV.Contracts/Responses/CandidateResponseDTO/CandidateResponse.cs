@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CV.Contracts.Responses.TechStackResponseDTO;
+using CV.Contracts.Responses.WorkExperienceResponseDTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,20 +19,7 @@ namespace CV.Contracts.Responses.CandidateResponse
         public IEnumerable<WorkExperienceResponse> WorkExperience { get; set; } = Enumerable.Empty<WorkExperienceResponse>();
         public IEnumerable<TechStackResponse> TechStack { get; set; } = Enumerable.Empty<TechStackResponse>();
     }
-    public class WorkExperienceResponse
-    {
-        public int WorkExperienceId { get; init; }
-        public string Description { get; set; }
-        public string Company { get; set; }
-        public string Category { get; set; }
-        public string JobTitle { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-    }
-    public class TechStackResponse
-    {
-        public int TechStackId { get; set; }
-        public string TechStackName { get; set; }
-    }
+
+
 }
 

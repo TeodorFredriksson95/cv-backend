@@ -11,6 +11,12 @@ using System.Text;
 using System.Threading.Tasks;
 using CV.Application.Services.CandidateService;
 using CV.Application.Repositories.CandidateRepository;
+using CV.Application.Repositories.ApiKeyRepository;
+using CV.Application.Services.ApiKeyService;
+using CV.Application.Repositories.TechStackRepository;
+using CV.Application.Services.TechStackService;
+using CV.Application.Repositories.WorkExperienceRepository;
+using CV.Application.Services.WorkExperienceService;
 
 namespace CV.Application
 {
@@ -23,6 +29,17 @@ namespace CV.Application
 
             services.AddSingleton<ICandidateRepository, CandidateRepository>();
             services.AddSingleton<ICandidateService, CandidateService>();
+            
+            services.AddSingleton<IApiKeyRepository, ApiKeyRepository>();
+            services.AddSingleton<IApiKeyService, ApiKeyService>();
+
+            services.AddSingleton<ITechStackRepository, TechStackRepository>();
+            services.AddSingleton<ITechStackService, TechStackService>();
+
+            services.AddSingleton<IWorkExperienceRepository, WorkExperienceRepository>();
+            services.AddSingleton<IWorkExperienceService, WorkExperienceService>();
+
+
 
             return services;
         }

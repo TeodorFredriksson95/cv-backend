@@ -18,6 +18,11 @@ namespace CV.Application.Services.CandidateService
 
         }
 
+        public async Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(CancellationToken cancellationToken = default)
+        {
+            return await _candidateRepository.GetAllCandidatesFullProfile(cancellationToken);
+        }
+
         public async Task<Candidate> GetCandidateByIdAsync(Guid publicUserId)
         {
             return await _candidateRepository.GetCandidateByPublicIdAsync(publicUserId);

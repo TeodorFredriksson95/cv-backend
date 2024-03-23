@@ -1,5 +1,6 @@
 using CV.Application;
 using CV.Application.Database;
+using CV.Application.Services.ApiKeyService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -32,6 +33,40 @@ builder.Services.AddAuthentication(x =>
         ValidateIssuer = true,
         ValidateAudience = true,
 
+    };
+
+    x.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var apiKeyService = context.HttpContext.RequestServices.GetRequiredService<IApiKeyService>();
+
+            var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+            // Check if the header is null or doesn't start with "Bearer "
+            if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                context.Fail("Authorization header is missing or not in Bearer token format.");
+                return;
+            }
+
+            // Extract the token from the header
+            var apiKeyHeaderValue = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+            if (string.IsNullOrWhiteSpace(apiKeyHeaderValue))
+            {
+                context.Fail("API Key is required");
+                return;
+            }
+
+            var isRevoked = await apiKeyService.IsApiKeyRevoked(apiKeyHeaderValue);
+            if (isRevoked)
+            {
+                context.Fail("API Key is revoked");
+                return;
+            }
+
+        }
     };
 });
 var app = builder.Build();

@@ -18,10 +18,22 @@
         
         public static class Candidate
         {
-            public const string Base = $"{ApiBase}/candidate";
-            public const string GetFullProfile = $"{Base}/full-profile";
+            public const string Base = $"{ApiBase}/candidates";
             public const string GetCandidateById = $"{Base}/{{id}}";
+            public const string GetAllCandidateFullProfile = $"{Base}/full-profile";
+        }
 
+        public static class TechStack
+        {
+            public const string Base = $"{ApiBase}/tech-stack";
+            public const string GetAllTech = Base;
+            public const string GetTechById = $"{Base}/{{id}}";
+        }
+        public static class WorkExperience
+        {
+            public const string Base = $"{ApiBase}/work-experiences";
+            public const string GetAllWorkExperiences = Base;
+            public const string GetWorkExperienceById = $"{Base}/{{id}}";
         }
     }
 }
