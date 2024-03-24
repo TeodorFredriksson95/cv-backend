@@ -17,46 +17,49 @@ namespace CV.Application.Repositories.CandidateRepository
             _connectionFactory = dbConnectionFactory;
         }
 
+
+
         public async Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(CancellationToken cancellationToken = default)
         {
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var candidatesQuery = @"
-        SELECT 
-            u.public_user_id AS PublicUserId,
-            u.firstname AS Firstname,
-            u.lastname AS Lastname,
-            u.email AS Email,
-            u.open_for_work AS OpenToWork,
-            c.country_name AS Country
-        FROM users u
-        LEFT JOIN countries c ON u.country_id = c.country_id";
+    SELECT 
+        c.public_user_id AS PublicUserId,
+        u.firstname AS Firstname,
+        u.lastname AS Lastname,
+        u.email AS Email,
+        c.open_for_work AS OpenToWork,
+        co.country_name AS Country
+    FROM candidates c
+    JOIN users u ON c.user_id = u.user_id
+    LEFT JOIN countries co ON u.country_id = co.country_id";
 
             var candidates = (await connection.QueryAsync<Candidate>(candidatesQuery)).ToList();
 
             foreach (var candidate in candidates)
             {
                 candidate.WorkExperience = (await connection.QueryAsync<WorkExperience>(@"
-            SELECT 
-                we.work_experience_id AS WorkExperienceId, 
-                we.description, 
-                we.start_date AS StartDate, 
-                we.end_date AS EndDate, 
-                comp.company_name AS Company, 
-                jt.job_title_name AS JobTitle, 
-                jc.job_category_name AS Category
-            FROM work_experience we
-            JOIN companies comp ON we.company_id = comp.company_id
-            JOIN job_titles jt ON we.job_title_id = jt.job_title_id
-            JOIN job_categories jc ON jt.job_category_id = jc.job_category_id
-            WHERE we.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
+        SELECT 
+            we.work_experience_id AS WorkExperienceId, 
+            we.description, 
+            we.start_date AS StartDate, 
+            we.end_date AS EndDate, 
+            comp.company_name AS Company, 
+            jt.job_title_name AS JobTitle, 
+            jc.job_category_name AS Category
+        FROM work_experience we
+        JOIN companies comp ON we.company_id = comp.company_id
+        JOIN job_titles jt ON we.job_title_id = jt.job_title_id
+        JOIN job_categories jc ON jt.job_category_id = jc.job_category_id
+        WHERE we.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
 
                 candidate.TechStack = (await connection.QueryAsync<TechStack>(@"
-            SELECT 
-                ts.tech_stack_id AS TechStackId, 
-                ts.tech_stack_name AS TechStackName
-            FROM users_tech_stack uts
-            JOIN tech_stack ts ON uts.tech_stack_id = ts.tech_stack_id
-            WHERE uts.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
+        SELECT 
+            ts.tech_stack_id AS TechStackId, 
+            ts.tech_stack_name AS TechStackName
+        FROM candidates_tech_stack cts
+        JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
+        WHERE cts.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
             }
 
             return candidates;
@@ -68,20 +71,22 @@ namespace CV.Application.Repositories.CandidateRepository
             throw new NotImplementedException();
         }
 
+
         public async Task<Candidate> GetCandidateByPublicIdAsync(Guid publicUserId)
         {
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var candidateQuery = @"
-                    SELECT 
-                        u.public_user_id AS PublicUserId,
-                        u.firstname AS Firstname,
-                        u.lastname AS Lastname,
-                        u.email AS Email,
-                        u.open_for_work AS OpenToWork,
-                        c.country_name AS Country
-                    FROM users u
-                    LEFT JOIN countries c ON u.country_id = c.country_id
-                    WHERE u.public_user_id = @PublicUserId";
+                SELECT 
+                    c.public_user_id AS PublicUserId,
+                    u.firstname AS Firstname,
+                    u.lastname AS Lastname,
+                    u.email AS Email,
+                    c.open_for_work AS OpenToWork,
+                    co.country_name AS Country
+                FROM candidates c
+                JOIN users u ON c.user_id = u.user_id
+                LEFT JOIN countries co ON u.country_id = co.country_id
+                WHERE c.public_user_id = @PublicUserId";
 
             var candidate = await connection.QueryFirstOrDefaultAsync<Candidate>(
                 candidateQuery,
@@ -110,10 +115,10 @@ namespace CV.Application.Repositories.CandidateRepository
 
                 var techStacksQuery = @"
                         SELECT ts.tech_stack_id AS TechStackId, ts.tech_stack_name AS TechStackName
-                        FROM users_tech_stack uts
-                        JOIN tech_stack ts ON uts.tech_stack_id = ts.tech_stack_id
-                        JOIN users u ON uts.public_user_id = u.public_user_id
-                        WHERE u.public_user_id = @PublicUserId";
+                        FROM candidates_tech_stack cts
+                        JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
+                        JOIN candidates c ON cts.public_user_id = c.public_user_id
+                        WHERE c.public_user_id = @PublicUserId";
 
                 candidate.TechStack = (await connection.QueryAsync<TechStack>(
                     techStacksQuery,
