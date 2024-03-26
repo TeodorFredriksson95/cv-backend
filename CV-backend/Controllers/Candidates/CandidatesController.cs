@@ -30,7 +30,7 @@ namespace CV_backend.Controllers.Candidates
             _workExperienceService = workExperienceService;
         }
 
-        [HttpGet(ApiEndpoints.WorkExperience.GetAllWorkExperiences)]
+        [HttpGet(ApiEndpoints.WorkExperience.GetAllWorkExperiences, Name = "GetAllWorkExperiences")]
         public async Task<IActionResult> GetAllWorkExperiences([FromQuery] GetAllWorkExperiencesRequest request, CancellationToken token)
         {
 
@@ -44,7 +44,7 @@ namespace CV_backend.Controllers.Candidates
 
             var workExperiencesCount = await _workExperienceService.GetWorkExperiencesCountAsync(options.JobTitle, options.Category, options.Company);
 
-            return Ok(workExperiences.MapToWorkExperiencesResponse(request.Page, request.PageSize, workExperiencesCount));
+            return Ok(workExperiences.MapToWorkExperiencesResponse(request.Page, request.PageSize, workExperiencesCount, Url));
         }
 
         [HttpGet(ApiEndpoints.WorkExperience.GetWorkExperienceById)]

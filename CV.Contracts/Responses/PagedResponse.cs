@@ -14,6 +14,8 @@ namespace CV.Contracts.Responses
         public required int Page{ get; set; }
         public required int Total{ get; set; }
         public bool HasNextPage => Total > (Page * PageSize);
+        public Dictionary<string, string> Links { get; set; } = new Dictionary<string, string>();
+
 
     }
 }
