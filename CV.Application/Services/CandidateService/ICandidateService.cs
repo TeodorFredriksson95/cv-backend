@@ -9,9 +9,9 @@ namespace CV.Application.Services.CandidateService
 {
     public interface ICandidateService
     {
-        Task<IEnumerable<Candidate>> GetFullCandidateProfile(CancellationToken token = default);
         Task<Candidate> GetCandidateByIdAsync(Guid publicUserId);
-        Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(CancellationToken cancellationToken = default);
+        Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(GetAllCandidatesOptions options, CancellationToken cancellationToken = default);
+        Task<int> GetCandidatesCountFullProfileAsync(GetAllCandidatesOptions options, CancellationToken cancellationToken = default);
 
     }
 }

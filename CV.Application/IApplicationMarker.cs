@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CV.Contracts.Responses.CandidateResponse
+namespace CV.Application
 {
-    public class CandidateResponses : PagedResponse<CandidateResponse>
+    public interface IApplicationMarker
     {
-
     }
 }

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CV.Contracts.Responses.CandidateResponse
+namespace CV.Contracts.Requests
 {
-    public class CandidateResponses : PagedResponse<CandidateResponse>
+    public class GetAllTechRequest : PagedRequests
     {
+        public string? TechName { get; set; }
 
     }
 }

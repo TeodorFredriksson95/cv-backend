@@ -17,6 +17,9 @@ using CV.Application.Repositories.TechStackRepository;
 using CV.Application.Services.TechStackService;
 using CV.Application.Repositories.WorkExperienceRepository;
 using CV.Application.Services.WorkExperienceService;
+using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace CV.Application
 {
@@ -24,6 +27,8 @@ namespace CV.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
+
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IUserService, UserService>();
 
@@ -50,5 +55,22 @@ namespace CV.Application
             services.AddSingleton<DbInitializer>();
             return services;
         }
+
+        public static IServiceCollection AddRateLimiting(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddOptions();
+
+            services.AddMemoryCache();
+
+            services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
+
+
+            services.AddInMemoryRateLimiting();
+         
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+            return services;
+        }
+
     }
 }

@@ -17,9 +17,47 @@ namespace CV.Application.Repositories.CandidateRepository
             _connectionFactory = dbConnectionFactory;
         }
 
+        public async Task<int> GetAllCandidatesCountFullProfileAsync(GetAllCandidatesOptions options, CancellationToken cancellationToken = default)
+        {
+            using var connection = await _connectionFactory.CreateConnectionAsync();
+
+            var candidatesQuery = @"
+                SELECT count(c.public_user_id)
+                FROM candidates c
+                JOIN users u ON c.user_id = u.user_id
+                LEFT JOIN countries co ON u.country_id = co.country_id
+                WHERE (@CountryName IS NULL OR co.country_name ILIKE ('%' || @CountryName || '%'))
+                     AND (@Firstname IS NULL OR u.firstname ILIKE ('%' || @Firstname || '%'))
+                     AND (@Lastname IS NULL OR u.lastname ILIKE ('%' || @Lastname || '%'))
+                     AND (@OpenToWork IS NULL OR c.open_for_work = CAST(@OpenToWork AS BOOLEAN))";
 
 
-        public async Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(CancellationToken cancellationToken = default)
+            var candidates = (await connection.QueryAsync<Candidate>(candidatesQuery, new
+            {
+                CountryName = options.Country,
+                Firstname = options.Firstname,
+                Lastname = options.Lastname,
+                OpenToWork = (bool?)Convert.ToBoolean(options.OpenToWork),
+            })).ToList();
+
+            foreach (var candidate in candidates)
+            {
+
+                candidate.TechStack = (await connection.QueryAsync<TechStack>(@"
+                SELECT 
+                    ts.tech_stack_id AS TechStackId, 
+                    ts.tech_stack_name AS TechStackName
+                FROM candidates_tech_stack cts
+                JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
+                WHERE cts.public_user_id = @PublicUserId 
+                AND (@TechStackName IS NULL OR ts.tech_stack_name ILIKE ('%' || @TechStackName || '%'))",
+                new { PublicUserId = candidate.PublicUserId, TechStackName = options.TechStackName })).ToList();
+            }
+
+            return candidates.Count();
+        }
+
+        public async Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(GetAllCandidatesOptions options, CancellationToken cancellationToken = default)
         {
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var candidatesQuery = @"
@@ -32,34 +70,47 @@ namespace CV.Application.Repositories.CandidateRepository
         co.country_name AS Country
     FROM candidates c
     JOIN users u ON c.user_id = u.user_id
-    LEFT JOIN countries co ON u.country_id = co.country_id";
+    LEFT JOIN countries co ON u.country_id = co.country_id
+    WHERE (@CountryName IS NULL OR co.country_name ILIKE ('%' || @CountryName || '%'))
+         AND (@Firstname IS NULL OR u.firstname ILIKE ('%' || @Firstname || '%'))
+         AND (@Lastname IS NULL OR u.lastname ILIKE ('%' || @Lastname || '%'))
+         AND (@OpenToWork IS NULL OR c.open_for_work = CAST(@OpenToWork AS BOOLEAN))";
 
-            var candidates = (await connection.QueryAsync<Candidate>(candidatesQuery)).ToList();
+
+            var candidates = (await connection.QueryAsync<Candidate>(candidatesQuery, new
+            {
+                CountryName = options.Country,
+                Firstname = options.Firstname,
+                Lastname = options.Lastname,
+                OpenToWork = (bool?)Convert.ToBoolean(options.OpenToWork),
+            })).ToList();
 
             foreach (var candidate in candidates)
             {
                 candidate.WorkExperience = (await connection.QueryAsync<WorkExperience>(@"
-        SELECT 
-            we.work_experience_id AS WorkExperienceId, 
-            we.description, 
-            we.start_date AS StartDate, 
-            we.end_date AS EndDate, 
-            comp.company_name AS Company, 
-            jt.job_title_name AS JobTitle, 
-            jc.job_category_name AS Category
-        FROM work_experience we
-        JOIN companies comp ON we.company_id = comp.company_id
-        JOIN job_titles jt ON we.job_title_id = jt.job_title_id
-        JOIN job_categories jc ON jt.job_category_id = jc.job_category_id
-        WHERE we.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
+                SELECT 
+                    we.work_experience_id AS WorkExperienceId, 
+                    we.description, 
+                    we.start_date AS StartDate, 
+                    we.end_date AS EndDate, 
+                    comp.company_name AS Company, 
+                    jt.job_title_name AS JobTitle, 
+                    jc.job_category_name AS Category
+                FROM work_experience we
+                JOIN companies comp ON we.company_id = comp.company_id
+                JOIN job_titles jt ON we.job_title_id = jt.job_title_id
+                JOIN job_categories jc ON jt.job_category_id = jc.job_category_id
+                WHERE we.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
 
                 candidate.TechStack = (await connection.QueryAsync<TechStack>(@"
-        SELECT 
-            ts.tech_stack_id AS TechStackId, 
-            ts.tech_stack_name AS TechStackName
-        FROM candidates_tech_stack cts
-        JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
-        WHERE cts.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
+                SELECT 
+                    ts.tech_stack_id AS TechStackId, 
+                    ts.tech_stack_name AS TechStackName
+                FROM candidates_tech_stack cts
+                JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
+                WHERE cts.public_user_id = @PublicUserId 
+                AND (@TechStackName IS NULL OR ts.tech_stack_name ILIKE ('%' || @TechStackName || '%'))",
+                new { PublicUserId = candidate.PublicUserId, TechStackName = options.TechStackName })).ToList();
             }
 
             return candidates;

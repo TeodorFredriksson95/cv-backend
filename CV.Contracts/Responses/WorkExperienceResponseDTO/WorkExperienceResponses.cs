@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace CV.Contracts.Responses.WorkExperienceResponseDTO
 {
-    public class WorkExperienceResponses
+    public class WorkExperienceResponses : PagedResponse <WorkExperienceResponse>
     {
-        public required IEnumerable<WorkExperienceResponse> WorkExperienceList { get; init; } = Enumerable.Empty<WorkExperienceResponse>();
 
     }
 }

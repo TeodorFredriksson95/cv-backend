@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace CV.Contracts.Responses.TechStackResponseDTO
 {
-    public class TechStackResponses
+    public class TechStackResponses : PagedResponse<TechStackResponse>
     {
-        public required IEnumerable<TechStackResponse> TechStackList { get; init; } = Enumerable.Empty<TechStackResponse>();
 
     }
 }

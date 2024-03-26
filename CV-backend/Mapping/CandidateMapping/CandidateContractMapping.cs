@@ -1,4 +1,5 @@
 ﻿using CV.Application.Models;
+using CV.Contracts.Requests;
 using CV.Contracts.Responses.CandidateResponse;
 using CV.Contracts.Responses.TechStackResponseDTO;
 using CV.Contracts.Responses.WorkExperienceResponseDTO;
@@ -36,9 +37,23 @@ namespace CV_backend.Mapping.CandidateContractMapping
             };
             return candidateResponse;
         }
-        public static CandidateResponses MapToCandidatesResponse(this IEnumerable<Candidate> candidates)
+        public static CandidateResponses MapToCandidatesResponse(this IEnumerable<Candidate> candidates, int page, int pageSize, int totalCount)
         {
-            return new CandidateResponses { Candidates = candidates.Select(MapToCandidateResponse) };
+            return new CandidateResponses { ResponseList = candidates.Select(MapToCandidateResponse), Page = page, PageSize = pageSize, Total = totalCount };
+        }
+
+        public static GetAllCandidatesOptions MapToOptions(this GetAllCandidatesRequest request)
+        {
+            return new GetAllCandidatesOptions
+            {
+                Country = request.Country,
+                Firstname = request.Firstname,
+                Lastname = request.Lastname,
+                OpenToWork = request.OpenToWork,
+                TechStackName = request.TechStackName,
+                PageSize = request.PageSize,
+                Page = request.Page,
+            };
         }
     }
 }

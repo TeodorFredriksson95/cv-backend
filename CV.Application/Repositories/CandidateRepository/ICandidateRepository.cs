@@ -11,6 +11,7 @@ namespace CV.Application.Repositories.CandidateRepository
     {
         Task<IEnumerable<Candidate>> GetCandidate(CancellationToken token = default);
         Task<Candidate> GetCandidateByPublicIdAsync(Guid publicUserId);
-        Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(CancellationToken cancellationToken = default);
+        Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(GetAllCandidatesOptions options, CancellationToken cancellationToken = default);
+        Task<int> GetAllCandidatesCountFullProfileAsync(GetAllCandidatesOptions options, CancellationToken cancellationToken = default);
     }
 }

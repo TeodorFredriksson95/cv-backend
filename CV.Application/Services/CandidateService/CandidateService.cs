@@ -1,5 +1,6 @@
 ﻿using CV.Application.Models;
 using CV.Application.Repositories.CandidateRepository;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,19 +9,22 @@ using System.Threading.Tasks;
 
 namespace CV.Application.Services.CandidateService
 {
+
     public class CandidateService : ICandidateService
     {
         private readonly ICandidateRepository _candidateRepository;
-        public CandidateService(ICandidateRepository candidateRepository)
+        private readonly IValidator<GetAllCandidatesOptions> _optionsValidator;
+        public CandidateService(ICandidateRepository candidateRepository, IValidator<GetAllCandidatesOptions> optionsValidator)
         {
 
             _candidateRepository = candidateRepository;
-
+            _optionsValidator = optionsValidator;
         }
 
-        public async Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(GetAllCandidatesOptions options, CancellationToken cancellationToken = default)
         {
-            return await _candidateRepository.GetAllCandidatesFullProfile(cancellationToken);
+            await _optionsValidator.ValidateAndThrowAsync(options);
+            return await _candidateRepository.GetAllCandidatesFullProfile(options, cancellationToken);
         }
 
         public async Task<Candidate> GetCandidateByIdAsync(Guid publicUserId)
@@ -29,9 +33,11 @@ namespace CV.Application.Services.CandidateService
             
         }
 
-        public Task<IEnumerable<Candidate>> GetFullCandidateProfile(CancellationToken token = default)
+        public async Task<int> GetCandidatesCountFullProfileAsync(GetAllCandidatesOptions options, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await _candidateRepository.GetAllCandidatesCountFullProfileAsync(options, cancellationToken);
         }
+
+     
     }
 }

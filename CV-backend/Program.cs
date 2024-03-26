@@ -1,3 +1,5 @@
+using AspNetCoreRateLimit;
+using CV.Api.Mapping;
 using CV.Application;
 using CV.Application.Database;
 using CV.Application.Services.ApiKeyService;
@@ -13,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
+builder.Services.AddRateLimiting(builder.Configuration);
 builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
 
@@ -77,10 +80,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseIpRateLimiting(); 
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ValidationMappingMiddleware>();
 
 app.MapControllers();
 

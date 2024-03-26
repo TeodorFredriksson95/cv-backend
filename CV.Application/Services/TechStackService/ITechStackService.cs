@@ -9,7 +9,8 @@ namespace CV.Application.Services.TechStackService
 {
     public interface ITechStackService
     {
-        Task<IEnumerable<TechStack>> GetTechStackList();
+        Task<IEnumerable<TechStack>> GetTechStackList(GetAllTechStackOptions options);
         Task<TechStack> GetTechStackById(int id);
+        Task<int> GetTechStackCountAsync(string? techName);
     }
 }

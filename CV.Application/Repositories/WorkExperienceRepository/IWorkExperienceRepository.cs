@@ -10,6 +10,7 @@ namespace CV.Application.Repositories.WorkExperienceRepository
     public interface IWorkExperienceRepository
     {
         Task<WorkExperience> GetWorkExperienceById(int id);
-        Task<IEnumerable<WorkExperience>> GetAllWorkExperiences();
+        Task<IEnumerable<WorkExperience>> GetAllWorkExperiences(GetAllWorkExperiencesOptions options);
+        Task<int> GetWorkExperiencesCountAsync(string? jobTitle, string? jobCategory, string? companyName);
     }
 }
