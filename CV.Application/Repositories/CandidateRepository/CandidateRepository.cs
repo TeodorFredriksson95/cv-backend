@@ -21,40 +21,29 @@ namespace CV.Application.Repositories.CandidateRepository
         {
             using var connection = await _connectionFactory.CreateConnectionAsync();
 
-            var candidatesQuery = @"
-                SELECT count(c.public_user_id)
-                FROM candidates c
-                JOIN users u ON c.user_id = u.user_id
-                LEFT JOIN countries co ON u.country_id = co.country_id
-                WHERE (@CountryName IS NULL OR co.country_name ILIKE ('%' || @CountryName || '%'))
-                     AND (@Firstname IS NULL OR u.firstname ILIKE ('%' || @Firstname || '%'))
-                     AND (@Lastname IS NULL OR u.lastname ILIKE ('%' || @Lastname || '%'))
-                     AND (@OpenToWork IS NULL OR c.open_for_work = CAST(@OpenToWork AS BOOLEAN))";
+            var countQuery = @"
+        SELECT COUNT(DISTINCT c.public_user_id)
+        FROM candidates c
+        JOIN users u ON c.user_id = u.user_id
+        LEFT JOIN countries co ON u.country_id = co.country_id
+        LEFT JOIN candidates_tech_stack cts ON c.public_user_id = cts.public_user_id
+        LEFT JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
+        WHERE (@CountryName IS NULL OR co.country_name ILIKE ('%' || @CountryName || '%'))
+             AND (@Firstname IS NULL OR u.firstname ILIKE ('%' || @Firstname || '%'))
+             AND (@Lastname IS NULL OR u.lastname ILIKE ('%' || @Lastname || '%'))
+             AND (@OpenToWork IS NULL OR c.open_for_work = @OpenToWork)
+             AND (@TechStackName IS NULL OR ts.tech_stack_name ILIKE ('%' || @TechStackName || '%'))";
 
-
-            var candidates = (await connection.QueryAsync<Candidate>(candidatesQuery, new
+            int count = await connection.QuerySingleAsync<int>(countQuery, new
             {
                 CountryName = options.Country,
                 Firstname = options.Firstname,
                 Lastname = options.Lastname,
-                OpenToWork = (bool?)Convert.ToBoolean(options.OpenToWork),
-            })).ToList();
+                OpenToWork = options.OpenToWork,
+                TechStackName = options.TechStackName
+            });
 
-            foreach (var candidate in candidates)
-            {
-
-                candidate.TechStack = (await connection.QueryAsync<TechStack>(@"
-                SELECT 
-                    ts.tech_stack_id AS TechStackId, 
-                    ts.tech_stack_name AS TechStackName
-                FROM candidates_tech_stack cts
-                JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
-                WHERE cts.public_user_id = @PublicUserId 
-                AND (@TechStackName IS NULL OR ts.tech_stack_name ILIKE ('%' || @TechStackName || '%'))",
-                new { PublicUserId = candidate.PublicUserId, TechStackName = options.TechStackName })).ToList();
-            }
-
-            return candidates.Count();
+            return count;
         }
 
         public async Task<IEnumerable<Candidate>> GetAllCandidatesFullProfile(GetAllCandidatesOptions options, CancellationToken cancellationToken = default)
@@ -74,7 +63,10 @@ namespace CV.Application.Repositories.CandidateRepository
     WHERE (@CountryName IS NULL OR co.country_name ILIKE ('%' || @CountryName || '%'))
          AND (@Firstname IS NULL OR u.firstname ILIKE ('%' || @Firstname || '%'))
          AND (@Lastname IS NULL OR u.lastname ILIKE ('%' || @Lastname || '%'))
-         AND (@OpenToWork IS NULL OR c.open_for_work = CAST(@OpenToWork AS BOOLEAN))";
+         AND (@OpenToWork IS NULL OR c.open_for_work = @OpenToWork)
+
+         limit @PageSize
+         offset @PageOffset";
 
 
             var candidates = (await connection.QueryAsync<Candidate>(candidatesQuery, new
@@ -82,7 +74,9 @@ namespace CV.Application.Repositories.CandidateRepository
                 CountryName = options.Country,
                 Firstname = options.Firstname,
                 Lastname = options.Lastname,
-                OpenToWork = (bool?)Convert.ToBoolean(options.OpenToWork),
+                OpenToWork = options.OpenToWork,
+                PageSize = options.PageSize,
+                PageOffset = (options.Page - 1) * options.PageSize
             })).ToList();
 
             foreach (var candidate in candidates)

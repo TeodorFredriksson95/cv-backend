@@ -23,11 +23,13 @@ namespace CV_backend.Controllers.Candidates
         private readonly ICandidateService _candidateService;
         private readonly ITechStackService _techStackService;
         private readonly IWorkExperienceService _workExperienceService;
-        public CandidatesController(ICandidateService candidateService, ITechStackService techStackService, IWorkExperienceService workExperienceService)
+        private readonly ILinkService _linkService;
+        public CandidatesController(ICandidateService candidateService, ITechStackService techStackService, IWorkExperienceService workExperienceService, ILinkService linkService)
         {
             _candidateService = candidateService;
             _techStackService = techStackService;
             _workExperienceService = workExperienceService;
+            _linkService = linkService;
         }
 
         [HttpGet(ApiEndpoints.WorkExperience.GetAllWorkExperiences, Name = "GetAllWorkExperiences")]
@@ -43,8 +45,10 @@ namespace CV_backend.Controllers.Candidates
             }
 
             var workExperiencesCount = await _workExperienceService.GetWorkExperiencesCountAsync(options.JobTitle, options.Category, options.Company);
+            var response = workExperiences.MapToWorkExperiencesResponse(request.Page, request.PageSize, workExperiencesCount);
+            response.Links = _linkService.GenerateLinks("GetAllWorkExperiences", Url, request.Page, request.PageSize, workExperiencesCount);
 
-            return Ok(workExperiences.MapToWorkExperiencesResponse(request.Page, request.PageSize, workExperiencesCount, Url));
+            return Ok(response);    
         }
 
         [HttpGet(ApiEndpoints.WorkExperience.GetWorkExperienceById)]
@@ -59,7 +63,7 @@ namespace CV_backend.Controllers.Candidates
             return Ok(workExperience.MapToWorkExperienceResponse());
         }
 
-        [HttpGet(ApiEndpoints.TechStack.GetAllTech)]
+        [HttpGet(ApiEndpoints.TechStack.GetAllTech, Name = "GetAllTech")]
         public async Task<IActionResult> GetAllTech([FromQuery] GetAllTechRequest request, CancellationToken token)
         {
             var options = request.MapToOptions();
@@ -71,7 +75,11 @@ namespace CV_backend.Controllers.Candidates
             {
                 return NotFound();
             }
-            return Ok(allTech.MapToTechStackResponses(request.Page, request.PageSize, techListCount));
+
+            var response = allTech.MapToTechStackResponses(request.Page, request.PageSize, techListCount);
+            response.Links = _linkService.GenerateLinks("GetAllTech", Url, request.Page, request.PageSize, techListCount);
+
+            return Ok(response);
         }
 
         [HttpGet(ApiEndpoints.TechStack.GetTechById)]
@@ -101,7 +109,7 @@ namespace CV_backend.Controllers.Candidates
 
         }
 
-        [HttpGet(ApiEndpoints.Candidate.GetAllCandidateFullProfile)]
+        [HttpGet(ApiEndpoints.Candidate.GetAllCandidateFullProfile, Name = "GetAllCandidatesFullProfile")]
         public async Task<IActionResult> GetAllCandidatesFullProfile([FromQuery] GetAllCandidatesRequest request, CancellationToken token)
         {
             var options = request.MapToOptions();
@@ -112,7 +120,10 @@ namespace CV_backend.Controllers.Candidates
             {
                 return NotFound();
             }
-            return Ok(candidates.MapToCandidatesResponse(request.Page, request.PageSize, candidatesCount));
+
+            var response = candidates.MapToCandidatesResponse(request.Page, request.PageSize, candidatesCount);
+            response.Links = _linkService.GenerateLinks("GetAllCandidatesFullProfile", Url, request.Page, request.PageSize, candidatesCount);
+            return Ok(response);
 
         }
 

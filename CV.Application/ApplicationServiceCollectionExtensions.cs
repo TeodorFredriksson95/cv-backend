@@ -29,9 +29,6 @@ namespace CV.Application
         {
             services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
 
-            services.AddSingleton<IUserRepository, UserRepository>();
-            services.AddSingleton<IUserService, UserService>();
-
             services.AddSingleton<ICandidateRepository, CandidateRepository>();
             services.AddSingleton<ICandidateService, CandidateService>();
             
@@ -44,6 +41,7 @@ namespace CV.Application
             services.AddSingleton<IWorkExperienceRepository, WorkExperienceRepository>();
             services.AddSingleton<IWorkExperienceService, WorkExperienceService>();
 
+            services.AddScoped<ILinkService, LinkService>();
 
 
             return services;
@@ -59,14 +57,9 @@ namespace CV.Application
         public static IServiceCollection AddRateLimiting(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
-
             services.AddMemoryCache();
-
             services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
-
-
             services.AddInMemoryRateLimiting();
-         
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             return services;

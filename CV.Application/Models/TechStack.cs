@@ -10,6 +10,5 @@ namespace CV.Application.Models
     {
         public int TechStackId { get; set; }
         public string TechStackName { get; set; }
-        public IEnumerable<Candidate> Candidates { get; set; }
     }
 }

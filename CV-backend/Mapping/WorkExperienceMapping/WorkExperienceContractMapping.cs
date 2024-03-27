@@ -3,6 +3,8 @@ using CV.Contracts.Requests;
 using CV.Contracts.Responses.TechStackResponseDTO;
 using CV.Contracts.Responses.WorkExperienceResponseDTO;
 using Microsoft.AspNetCore.Mvc;
+using CV_backend.Util;
+
 
 namespace CV_backend.Mapping.WorkExperienceMapping
 {
@@ -25,7 +27,7 @@ namespace CV_backend.Mapping.WorkExperienceMapping
         }
 
 
-        public static WorkExperienceResponses MapToWorkExperiencesResponse(this IEnumerable<WorkExperience> workExperienceList, int page, int pageSize, int totalCount, IUrlHelper urlHelper)
+        public static WorkExperienceResponses MapToWorkExperiencesResponse(this IEnumerable<WorkExperience> workExperienceList, int page, int pageSize, int totalCount)
         {
             var response = new WorkExperienceResponses { 
                 ResponseList = workExperienceList.Select(MapToWorkExperienceResponse),
@@ -33,23 +35,7 @@ namespace CV_backend.Mapping.WorkExperienceMapping
                 PageSize = pageSize,
                 Total = totalCount,
             };
-
-            string baseUrl = urlHelper.Link("GetAllWorkExperiences", null);
-
-            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-            response.Links["self"] = $"{baseUrl}?page={page}";
-            response.Links["first"] = $"{baseUrl}?page=1";
-            response.Links["last"] = $"{baseUrl}?page={totalPages}";
-
-            if (page > 1)
-            {
-                response.Links["prev"] = $"{baseUrl}?page={page - 1}&pageSize={pageSize}";
-            }
-
-            if (page < totalPages)
-            {
-                response.Links["next"] = $"{baseUrl}?page={page + 1}&pageSize={pageSize}";
-            }
+            
 
             return response;
         }
