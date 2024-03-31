@@ -18,6 +18,7 @@ builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
+var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 
 builder.Services.AddAuthentication(x =>
 {
@@ -28,14 +29,15 @@ builder.Services.AddAuthentication(x =>
 {
     x.TokenValidationParameters = new TokenValidationParameters
     {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT_TOKEN_SECRET"]!)),
+        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT_TOKEN_SECRET"]!)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET"))),
+        //IssuerSigningKey = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET"),
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
         ValidIssuer = config["Jwt:Issuer"],
         ValidAudience = config["Jwt:Audience"],
         ValidateIssuer = true,
         ValidateAudience = true,
-
     };
 
     x.Events = new JwtBearerEvents

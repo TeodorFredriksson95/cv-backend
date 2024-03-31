@@ -19,14 +19,24 @@ namespace CV.Application.Database
 
         public NpgsqlConnectionFactory(string connectionString)
         {
-            _connectionString = connectionString;
+            _connectionString = connectionString;   
         }
 
         public async Task<IDbConnection> CreateConnectionAsync(CancellationToken token = default)
         {
-            var connection = new NpgsqlConnection(_connectionString);
-            await connection.OpenAsync(token);
-            return connection;
+            try
+            {
+                var connection = new NpgsqlConnection(_connectionString);
+                Console.WriteLine($"Opening connection to: {connection.ConnectionString}");
+                await connection.OpenAsync(token);
+                Console.WriteLine("Connection opened successfully.");
+                return connection;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error opening database connection: {ex.Message}");
+                throw; // Re-throw the exception to ensure it's caught by the caller.
+            }
         }
     }
 }
