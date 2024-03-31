@@ -51,7 +51,7 @@ namespace CV.Application.Repositories.CandidateRepository
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var candidatesQuery = @"
     SELECT 
-        c.public_user_id AS PublicUserId,
+        c.public_user_id AS Id,
         u.firstname AS Firstname,
         u.lastname AS Lastname,
         u.email AS Email,
@@ -94,7 +94,7 @@ namespace CV.Application.Repositories.CandidateRepository
                 JOIN companies comp ON we.company_id = comp.company_id
                 JOIN job_titles jt ON we.job_title_id = jt.job_title_id
                 JOIN job_categories jc ON jt.job_category_id = jc.job_category_id
-                WHERE we.public_user_id = @PublicUserId", new { PublicUserId = candidate.PublicUserId })).ToList();
+                WHERE we.public_user_id = @PublicUserId", new { PublicUserId = candidate.Id })).ToList();
 
                 candidate.TechStack = (await connection.QueryAsync<TechStack>(@"
                 SELECT 
@@ -104,7 +104,7 @@ namespace CV.Application.Repositories.CandidateRepository
                 JOIN tech_stack ts ON cts.tech_stack_id = ts.tech_stack_id
                 WHERE cts.public_user_id = @PublicUserId 
                 AND (@TechStackName IS NULL OR ts.tech_stack_name ILIKE ('%' || @TechStackName || '%'))",
-                new { PublicUserId = candidate.PublicUserId, TechStackName = options.TechStackName })).ToList();
+                new { PublicUserId = candidate.Id, TechStackName = options.TechStackName })).ToList();
             }
 
             return candidates;
@@ -122,7 +122,7 @@ namespace CV.Application.Repositories.CandidateRepository
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var candidateQuery = @"
                 SELECT 
-                    c.public_user_id AS PublicUserId,
+                    c.public_user_id AS Id,
                     u.firstname AS Firstname,
                     u.lastname AS Lastname,
                     u.email AS Email,
@@ -154,7 +154,7 @@ namespace CV.Application.Repositories.CandidateRepository
                     JOIN Job_Categories jc ON jt.Job_Category_Id = jc.Job_Category_Id
                     WHERE we.Public_User_Id = @PublicUserId";
 
-                var workExperiences = await connection.QueryAsync<WorkExperience>(workExperiencesQuery, new { candidate.PublicUserId });
+                var workExperiences = await connection.QueryAsync<WorkExperience>(workExperiencesQuery, new { PublicUserId = candidate.Id });
                 candidate.WorkExperience = workExperiences.ToList();
 
 
@@ -167,7 +167,7 @@ namespace CV.Application.Repositories.CandidateRepository
 
                 candidate.TechStack = (await connection.QueryAsync<TechStack>(
                     techStacksQuery,
-                    new { PublicUserId = candidate.PublicUserId })).ToList();
+                    new { PublicUserId = candidate.Id })).ToList();
 
             }
 

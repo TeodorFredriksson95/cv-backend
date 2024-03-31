@@ -9,7 +9,7 @@ namespace CV.Application.Models
     public class WorkExperience
     {
         public  string UserId { get; init; }
-        public Guid PublicUserId { get; init; }
+        public Guid Id { get; init; }
         public int WorkExperienceId { get; init; }
         public string Description { get; set; }
         public string Company { get; set; }

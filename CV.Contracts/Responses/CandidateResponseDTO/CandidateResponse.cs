@@ -10,7 +10,7 @@ namespace CV.Contracts.Responses.CandidateResponse
 {
     public class CandidateResponse
     {
-        public Guid PublicUserId { get; init; }
+        public Guid Id { get; init; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string Email { get; set; }

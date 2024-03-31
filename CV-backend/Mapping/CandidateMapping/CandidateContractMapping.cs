@@ -18,7 +18,7 @@ namespace CV_backend.Mapping.CandidateContractMapping
                 Firstname = candidate.Firstname,
                 Lastname = candidate.Lastname,
                 OpenToWork = candidate.OpenToWork,
-                PublicUserId = candidate.PublicUserId,
+                Id = candidate.Id,
                 WorkExperience = candidate.WorkExperience.Select(we => new WorkExperienceResponse
                 {
                     WorkExperienceId = we.WorkExperienceId,

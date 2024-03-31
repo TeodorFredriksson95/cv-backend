@@ -8,8 +8,9 @@ namespace CV.Application.Models
 {
     public class Candidate
     {
+        //UserId is used for internal purposes. Id for external.
         public string UserId { get; init; }
-        public Guid PublicUserId { get; init; }
+        public Guid Id { get; init; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string Email { get; set; }
