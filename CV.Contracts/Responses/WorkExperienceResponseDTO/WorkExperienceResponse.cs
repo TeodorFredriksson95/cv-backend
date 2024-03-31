@@ -8,7 +8,7 @@ namespace CV.Contracts.Responses.WorkExperienceResponseDTO
 {
     public class WorkExperienceResponse
     {
-        public int WorkExperienceId { get; init; }
+        public int Id { get; init; }
         public string Description { get; set; }
         public string Company { get; set; }
         public string Category { get; set; }

@@ -8,7 +8,7 @@ namespace CV.Contracts.Responses.TechStackResponseDTO
 {
     public class TechStackResponse
     {
-        public int TechStackId { get; set; }
+        public int Id { get; set; }
         public string TechStackName { get; set; }
     }
 }

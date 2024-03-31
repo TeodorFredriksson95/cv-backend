@@ -9,7 +9,7 @@ namespace CV.Contracts.Responses
 {
     public class PagedResponse<TResponse>
     {
-        public required IEnumerable<TResponse> ResponseList { get; init; } = Enumerable.Empty<TResponse>();
+        public required IEnumerable<TResponse> Data { get; init; } = Enumerable.Empty<TResponse>();
         public required int PageSize{ get; set; }
         public required int Page{ get; set; }
         public required int Total{ get; set; }

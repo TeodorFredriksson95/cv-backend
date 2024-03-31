@@ -14,7 +14,7 @@ namespace CV_backend.Mapping.WorkExperienceMapping
         {
             var WorkExperience = new WorkExperienceResponse
             {
-                WorkExperienceId = response.WorkExperienceId,
+                Id = response.WorkExperienceId,
                 Category = response.Category,
                 Company = response.Company,
                 Description = response.Description,
@@ -29,8 +29,8 @@ namespace CV_backend.Mapping.WorkExperienceMapping
 
         public static WorkExperienceResponses MapToWorkExperiencesResponse(this IEnumerable<WorkExperience> workExperienceList, int page, int pageSize, int totalCount)
         {
-            var response = new WorkExperienceResponses { 
-                ResponseList = workExperienceList.Select(MapToWorkExperienceResponse),
+            var response = new WorkExperienceResponses {
+                Data = workExperienceList.Select(MapToWorkExperienceResponse),
                 Page = page,
                 PageSize = pageSize,
                 Total = totalCount,

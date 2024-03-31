@@ -21,7 +21,7 @@ namespace CV_backend.Mapping.CandidateContractMapping
                 Id = candidate.Id,
                 WorkExperience = candidate.WorkExperience.Select(we => new WorkExperienceResponse
                 {
-                    WorkExperienceId = we.WorkExperienceId,
+                    Id = we.WorkExperienceId,
                     Category = we.Category,
                     StartDate = we.StartDate,
                     EndDate = we.EndDate,
@@ -31,7 +31,7 @@ namespace CV_backend.Mapping.CandidateContractMapping
                 }),
                 TechStack = candidate.TechStack.Select(ts => new TechStackResponse
                 {
-                    TechStackId = ts.TechStackId,
+                    Id = ts.TechStackId,
                     TechStackName = ts.TechStackName,
                 })
             };
@@ -39,7 +39,7 @@ namespace CV_backend.Mapping.CandidateContractMapping
         }
         public static CandidateResponses MapToCandidatesResponse(this IEnumerable<Candidate> candidates, int page, int pageSize, int totalCount)
         {
-            return new CandidateResponses { ResponseList = candidates.Select(MapToCandidateResponse), Page = page, PageSize = pageSize, Total = totalCount };
+            return new CandidateResponses { Data = candidates.Select(MapToCandidateResponse), Page = page, PageSize = pageSize, Total = totalCount };
         }
 
         public static GetAllCandidatesOptions MapToOptions(this GetAllCandidatesRequest request)

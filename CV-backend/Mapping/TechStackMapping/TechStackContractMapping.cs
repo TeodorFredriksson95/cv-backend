@@ -12,7 +12,7 @@ namespace CV_backend.Mapping.TechStackMapping
         {
             var TechStackResponse = new TechStackResponse
             {
-                TechStackId = response.TechStackId,
+                Id = response.TechStackId,
                 TechStackName = response.TechStackName,
             };
 
@@ -24,7 +24,7 @@ namespace CV_backend.Mapping.TechStackMapping
         {
             return new TechStackResponses
             {
-                ResponseList = techStackList.Select(MapToTechStackResponse),
+                Data = techStackList.Select(MapToTechStackResponse),
                 Page = page,
                 PageSize = pageSize,
                 Total = totalCount
