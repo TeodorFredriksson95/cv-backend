@@ -17,6 +17,7 @@ using System.Security.Claims;
 
 namespace CV_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     public class CandidatesController : Controller
     {
