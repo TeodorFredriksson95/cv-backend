@@ -6,7 +6,6 @@ using CV.Application.Services.ApiKeyService;
 using CV_backend.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Writers;
 using System.Text;
 
 
@@ -33,7 +32,8 @@ Console.WriteLine(connectionString);
 builder.Services.AddDatabase(connectionString);
 
 var blobService = new BlobService();
-await blobService.UploadTextToBlobAsync(connectionString, "pg conn string", "testblob.txt");
+await blobService.UploadTextToBlobAsync(connectionString, "connectionstringslogs", "testblob.txt");
+
 
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 

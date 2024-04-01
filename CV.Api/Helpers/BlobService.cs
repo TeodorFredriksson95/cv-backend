@@ -34,4 +34,5 @@ namespace CV_backend.Helpers
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
+    }
 }
