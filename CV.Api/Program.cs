@@ -28,11 +28,7 @@ builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
-Console.WriteLine(connectionString);
 builder.Services.AddDatabase(connectionString);
-
-var blobService = new BlobService();
-await blobService.UploadTextToBlobAsync(connectionString, "connectionstringslogs", "testblob.txt");
 
 
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
