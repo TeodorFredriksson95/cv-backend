@@ -5,6 +5,7 @@ using CV.Application.Database;
 using CV.Application.Services.ApiKeyService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Writers;
 using System.Text;
 
 
@@ -21,6 +22,8 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
+//builder.Services.AddSwaggerGen();
+
 builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 
