@@ -30,6 +30,8 @@ builder.Services.AddRateLimiting(builder.Configuration);
 var connectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection");
 builder.Services.AddDatabase(connectionString);
 Console.WriteLine("connection string" + connectionString);
+System.Diagnostics.Trace.WriteLine("connection string" + connectionString);
+System.Diagnostics.Trace.TraceInformation("connection string" + connectionString);
 
 
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
