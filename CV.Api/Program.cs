@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_DefaultConnection");
 builder.Services.AddDatabase(connectionString);
 
 
