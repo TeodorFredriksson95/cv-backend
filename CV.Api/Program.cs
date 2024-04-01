@@ -27,9 +27,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 
-var connectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection");
-Console.WriteLine(connectionString);
-builder.Services.AddDatabase(connectionString);
 
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 
@@ -88,6 +85,12 @@ builder.Services.AddAuthentication(x =>
     };
 });
 var app = builder.Build();
+
+var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+Console.WriteLine(connectionString);
+builder.Services.AddDatabase(connectionString);
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation($"Connection String: {connectionString}");
 
 if (app.Environment.IsDevelopment())
 {
