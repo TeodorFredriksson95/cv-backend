@@ -30,7 +30,7 @@ builder.Services.AddRateLimiting(builder.Configuration);
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 Console.WriteLine(connectionString);
 builder.Services.AddDatabase(connectionString);
-string filePath = @"C:\Users\teo95\OneDrive\Skrivbord\dberror.txt";
+string filePath = @"C/Users/teo95/OneDrive/Skrivbord/dberror.txt";
 
 try
 {
