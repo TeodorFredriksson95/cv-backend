@@ -3,6 +3,7 @@ using CV.Api.Mapping;
 using CV.Application;
 using CV.Application.Database;
 using CV.Application.Services.ApiKeyService;
+using CV_backend.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Writers;
@@ -30,19 +31,10 @@ builder.Services.AddRateLimiting(builder.Configuration);
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 Console.WriteLine(connectionString);
 builder.Services.AddDatabase(connectionString);
-string filePath = @"C/Users/teo95/OneDrive/Skrivbord/dberror.txt";
 
-try
-{
-    // Write the connection string to the file
-    File.WriteAllText(filePath, connectionString);
+var blobService = new BlobService();
+await blobService.UploadTextToBlobAsync(connectionString, "pg conn string", "testblob.txt");
 
-    Console.WriteLine($"Connection string written to {filePath}");
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"An error occurred: {ex.Message}");
-}
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 
 builder.Services.AddAuthentication(x =>
@@ -54,9 +46,7 @@ builder.Services.AddAuthentication(x =>
 {
     x.TokenValidationParameters = new TokenValidationParameters
     {
-        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT_TOKEN_SECRET"]!)),
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenSecret)),
-        //IssuerSigningKey = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET"),
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
         ValidIssuer = config["Jwt:Issuer"],
