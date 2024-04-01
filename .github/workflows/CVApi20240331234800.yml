@@ -13,7 +13,7 @@ env:
   AZURE_APIM_APPSERVICEURL: https://cvapi20240331234800.azurewebsites.net
   SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 5.6.3
   SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
-  # API_IMPORT_SPECIFICATION_PATH: CV.Api\publish\swagger.json
+  API_IMPORT_SPECIFICATION_PATH: CV.Api\publish\swagger.json
   API_IMPORT_DLL: CV.Api\bin\Release\net7.0\CV.Api.dll
   API_IMPORT_VERSION: v1
   CONFIGURATION: Release
@@ -40,11 +40,11 @@ jobs:
       run: dotnet test ${{ env.WORKING_DIRECTORY }} --no-build
     - name: Publish
       run: dotnet publish ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    # - name: Install Swashbuckle CLI .NET Global Tool
-    #   run: dotnet tool install --global Swashbuckle.AspNetCore.Cli --version ${{ env.SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION }}
-    #   working-directory: ${{ env.WORKING_DIRECTORY }}
-    # - name: Generate Open API Specification Document
-    #   run: swagger tofile --output "${{ env.API_IMPORT_SPECIFICATION_PATH }}" "${{ env.API_IMPORT_DLL }}" "${{ env.API_IMPORT_VERSION }}"
+    - name: Install Swashbuckle CLI .NET Global Tool
+      run: dotnet tool install --global Swashbuckle.AspNetCore.Cli --version ${{ env.SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+    - name: Generate Open API Specification Document
+      run: swagger tofile --output "${{ env.API_IMPORT_SPECIFICATION_PATH }}" "${{ env.API_IMPORT_DLL }}" "${{ env.API_IMPORT_VERSION }}"
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -68,7 +68,7 @@ jobs:
     - name: Azure Login
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }} 
         environment: azurecloud
         auth-type: SERVICE_PRINCIPAL
         allow-no-subscriptions: false
