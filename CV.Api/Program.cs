@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("unidevwebcon");
 builder.Services.AddDatabase(connectionString);
 Console.WriteLine("connection string" + connectionString);
 System.Diagnostics.Trace.WriteLine("connection string" + connectionString);
