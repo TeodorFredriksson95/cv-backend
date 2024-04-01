@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
-//builder.Services.AddSwaggerGen(.);
+//builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
