@@ -29,6 +29,7 @@ builder.Services.AddRateLimiting(builder.Configuration);
 
 var connectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection");
 builder.Services.AddDatabase(connectionString);
+Console.WriteLine("connection string" + connectionString);
 
 
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
@@ -36,7 +37,7 @@ var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;  
     x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(x =>
 {
