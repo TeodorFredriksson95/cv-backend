@@ -16,7 +16,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
-builder.Services.AddDatabase(config["Database:ConnectionString"]!);
+var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+Console.WriteLine(connectionString);
+builder.Services.AddDatabase(connectionString);
 
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 
@@ -30,7 +32,7 @@ builder.Services.AddAuthentication(x =>
     x.TokenValidationParameters = new TokenValidationParameters
     {
         //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT_TOKEN_SECRET"]!)),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET"))),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenSecret)),
         //IssuerSigningKey = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET"),
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
