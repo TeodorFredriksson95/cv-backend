@@ -30,7 +30,19 @@ builder.Services.AddRateLimiting(builder.Configuration);
 var connectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection");
 Console.WriteLine(connectionString);
 builder.Services.AddDatabase(connectionString);
+string filePath = @"C:\Users\teo95\OneDrive\Skrivbord\dberror.txt";
 
+try
+{
+    // Write the connection string to the file
+    File.WriteAllText(filePath, connectionString);
+
+    Console.WriteLine($"Connection string written to {filePath}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"An error occurred: {ex.Message}");
+}
 var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 
 builder.Services.AddAuthentication(x =>
