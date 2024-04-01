@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection");
 Console.WriteLine(connectionString);
 builder.Services.AddDatabase(connectionString);
 
