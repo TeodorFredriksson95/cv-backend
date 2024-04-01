@@ -27,7 +27,6 @@ namespace CV.Application.Database
             try
             {
                 var connection = new NpgsqlConnection(_connectionString);
-                Console.WriteLine($"Opening connection to: {connection.ConnectionString}");
                 await connection.OpenAsync(token);
                 Console.WriteLine("Connection opened successfully.");
                 return connection;
@@ -35,7 +34,7 @@ namespace CV.Application.Database
             catch (Exception ex)
             {
                 Console.WriteLine($"Error opening database connection: {ex.Message}");
-                throw; // Re-throw the exception to ensure it's caught by the caller.
+                throw; 
             }
         }
     }
