@@ -4,7 +4,7 @@ namespace CV_backend.Helpers
 {
     public class BlobService
     {
-        private string connectionString = "dJM5zu8em47D8fElRtjIX5BFj14aw5sgSQcCKUM/7dXipFqtalXiMNU1MEcF9MEPB/G9ZyI16sVd+AStG2Otzg=="; // Find this in your Azure Storage Account settings
+        private string connectionString = ""; // Find this in your Azure Storage Account settings
 
         public async Task UploadTextToBlobAsync(string content, string containerName, string blobName)
         {

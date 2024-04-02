@@ -28,9 +28,11 @@ builder.Services.AddApplication();
 builder.Services.AddRateLimiting(builder.Configuration);
 
 var connectionString = Environment.GetEnvironmentVariable("unidevwebcon");
+var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
+var issuer = Environment.GetEnvironmentVariable("CV_BACKEND_API_JWT_ISSUER");
+var audience = Environment.GetEnvironmentVariable("CV_BACKEND_API_JWT_AUDIENCE");
 builder.Services.AddDatabase(connectionString);
 
-var jwtTokenSecret = Environment.GetEnvironmentVariable("JWT_TOKEN_SECRET");
 
 builder.Services.AddAuthentication(x =>
 {
@@ -44,8 +46,8 @@ builder.Services.AddAuthentication(x =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenSecret)),
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
-        ValidIssuer = config["Jwt:Issuer"],
-        ValidAudience = config["Jwt:Audience"],
+        ValidIssuer = issuer,
+        ValidAudience = audience,
         ValidateIssuer = true,
         ValidateAudience = true,
     };
